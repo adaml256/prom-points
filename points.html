@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type="text/javascript">
+google.load('visualization', '1.0', {'packages':['corechart']});
+
+google.setOnLoadCallback(drawChart);
+
+function drawChart() {
+	var query = new google.visualization.Query("https://docs.google.com/spreadsheets/d/1irhQXmTXTMNUXASKkCouFTgMixcipe-XssGU0Lf68HY/gviz/tq?gid=0&range=A2:B31");
+	query.send(handleQueryResponse);
+}
+
+function color(a, b){
+	//Set the bar colour
+	return "color: #33aeff";
+}
+
+function handleQueryResponse(response) {
+	var data = response.getDataTable();
+	var chart = new google.visualization.BarChart(document.getElementById('barchart'));
+	
+	//Colour the bars
+	var view = new google.visualization.DataView(data);
+    view.setColumns([0, 1, {calc: color, type: "string", role: "style"}]);
+	
+	//Set options for the chart
+	var options = {
+		width: 1900, height: 800, 
+		chartArea: {left: 0, top: 0, width: 1800, height: 800}, 
+		enableInteractivity: false,
+		bar: {groupWidth: "90%"}, 
+		legend: {position: "none"}, 
+		hAxis: {viewWindowMode: "maximized", minValue: 0, maxValue: 50, gridlines: {count: 5}},
+		vAxis: {textPosition: "in", textStyle: {fontSize: 18, auraColor: "none", color: "#000"}},
+		annotations: {highContrast: true}
+	};
+	
+	//Load the page as an image
+	google.visualization.events.addListener(chart, 'ready', function () {
+        barchart.innerHTML = '<img src="' + chart.getImageURI() + '">';
+        console.log(barchart.innerHTML);
+      });
+	
+	chart.draw(view, options);
+}
+		</script>
+	</head>
+	<body>
+		<div id="barchart"></div>
+	</body>
+</html>
